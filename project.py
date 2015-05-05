@@ -8,8 +8,18 @@ from database_setup import Base, Restaurant, MenuItem
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 
+from flask import session as login_session
+import random, string
+
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+@app.route('/login')
+def showLogin():
+  state = ''.join(random.choice(string.ascii_uppercase +string.digits) for x in xrange(32))
+  login_session['state'] = state
+  s = "The current session state is " + login_session['state']
+  return render_template('login.html')
 
 @app.route('/restaurants/JSON')
 def restaurantJSON():
